@@ -1,0 +1,8 @@
+name: markbind-deploy-gh-pages
+description: 'Deploying your MarkBind repo back to the gh-pages branch of the same repository'
+branding: 
+  icon: 'upload-cloud'
+  color: 'blue'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'

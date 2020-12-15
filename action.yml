@@ -1,5 +1,5 @@
-name: markbind-deploy-gh-pages
-description: 'Deploying your MarkBind repo back to the gh-pages branch of the same repository'
+name: markbind-action
+description: 'A GitHub Action that builds and deploys your MarkBind site.'
 branding: 
   icon: 'upload-cloud'
   color: 'blue'

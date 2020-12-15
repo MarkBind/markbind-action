@@ -1,11 +1,10 @@
-# markbind-deploy-gh-pages
+# markbind-action
 
-Deploys your MarkBind site on push, using GitHub actions.
-
+A GitHub Action that builds and deploys your MarkBind site.
 
 ## How to use this action?
 
-Make sure that your markbind project is on the master branch.
+Make sure that your MarkBind project is on the master branch.
 
 1. On the top of your repo, click **Actions**
 2. Click **New workflow**
@@ -28,7 +27,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
           BASE_URL: # base URL to your gh-page
-        uses: le0tan/markbind-deploy-gh-pages@master
+        uses: markbind/markbind-action@1.0.0
 
 ```
 

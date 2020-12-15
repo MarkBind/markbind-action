@@ -27,7 +27,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
           BASE_URL: # base URL to your gh-page
-        uses: markbind/markbind-action@1.0.0
+        uses: MarkBind/markbind-action@1.0.0
 
 ```
 

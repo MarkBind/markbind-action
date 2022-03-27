@@ -52,13 +52,13 @@ runs:
       with:
         node-version: 12
     - name: Checkout markbind-cli@master
-      if: inputs.version == 'master'
+      if: inputs.version == 'development'
       uses: actions/checkout@v3
       with:
         repository: MarkBind/markbind
         path: markbind-cli
     - name: Install markbind-cli@master
-      if: inputs.version == 'master'
+      if: inputs.version == 'development'
       run: |
         npm i -g npm@8.3.1
         cd markbind-cli
@@ -68,7 +68,7 @@ runs:
         cd ../../..
       shell: bash
     - name: Install a released version of markbind-cli
-      if: inputs.version != 'master'
+      if: inputs.version != 'development'
       run: |
         npm install -g markbind-cli@${{ inputs.version }}
       shell: bash

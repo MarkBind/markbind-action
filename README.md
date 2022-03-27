@@ -4,16 +4,16 @@ A GitHub Action that builds and deploys your MarkBind site.
 ## Option Summary
 
 Option        | Required |                      Default | Remarks
-:-------------|:--------:|-----------------------------:|------------------------------------------------------------------------------
+:-------------|:--------:|-----------------------------:|-----------------------------------------------------------------------------------------------------------
 token         |   yes    |                              | The token to be used for the service
-service       |    no    |                   'gh-pages' | The publishing service to deploy the site
-purpose       |    no    |                 'deployment' | The deployment purpose
-domain        |    no    |                           '' | The domain that the site is available at. Required if service chosen is surge
-version       |    no    |                     'latest' | The MarkBind version to use to build the site
-keepFiles     |    no    |                        false | Whether to keep the files in the published branch before pushing
-rootDirectory |    no    |                          '.' | The directory to read source files from
+service       |    no    |                 `'gh-pages'` | The publishing service to deploy the site
+purpose       |    no    |               `'deployment'` | The deployment purpose
+domain        |    no    |                         `''` | The domain that the site is available at. Required if service chosen is surge or the purpose is PR preview
+version       |    no    |                   `'latest'` | The MarkBind version to use to build the site
+keepFiles     |    no    |                      `false` | Whether to keep the files in the published branch before pushing
+rootDirectory |    no    |                        `'.'` | The directory to read source files from
 baseUrl       |    no    | Value specified in site.json | The base URL relative to your domain
-siteConfig    |    no    |                  'site.json' | The site config file to use
+siteConfig    |    no    |                `'site.json'` | The site config file to use
 
 ## Option Details
 
@@ -21,7 +21,8 @@ siteConfig    |    no    |                  'site.json' | The site config file t
 Currently two types of tokens are supported (correspond to the two supported publishing services):
 - Token for GitHub Pages
   - Simply use `${{ secrets.GITHUB_TOKEN }}`
-  - Note that you need to ensure that your have selected the branch that you want to deploy to in your GitHub repo's Pages settings
+  - Note that you need to ensure that your have selected the branch that you want to deploy to in your [GitHub repo's Pages settings](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#choosing-a-publishing-source)
+  - Deployment to GitHub Pages might take 5-10 minutes before the site is available/refreshed
 - Token for Surge.sh
   - Example: `${{ secrets.SURGE_TOKEN }}`
     - `SURGE_TOKEN` is the environment secret name
@@ -32,65 +33,83 @@ Currently two types of tokens are supported (correspond to the two supported pub
 ### service
 Currently two types of publishing services are supported:
 - GitHub Pages
-  - 'gh-pages'
+  - `'gh-pages'`
   - See [here](https://markbind.org/userGuide/deployingTheSite.html#publishing-to-github-pages) for more details
 - Surge.sh
-  - 'surge'
+  - `'surge'`
   - See [here](https://surge.sh/) for more details
 
 ### purpose
 The purpose of the deployment. This can be either standard deployment or for PR previewing.
 - Standard deployment
-  - 'deployment'
+  - `'deployment'`
   - This is the default value
 - PR preview
-  - 'pr-preview'
-  - This is used when you want to build and preview a site when there is a PR made to the repository. Note that this does not work for PR from a fork(due to security reasons)
+  - `'pr-preview'`
+  - This is used if you want to build and preview the updated site whenever there is a PR made to the repository. Note that this does not work for PR from a fork (due to security reasons)
 
 ### domain
-The domain that the site is available at. Required if service chosen is surge. Surge.sh allows you to specify a subdomain as long as it is not taken up by others.
-
-- 'xxx.surge.sh'
-  - A typical domain that you can specify. You have to ensure that 'xxx' is unique. Read [here](https://surge.sh/help/adding-a-custom-domain) on how to configure a custom domain with Surge.sh
-- 'pr-x-<domain>'
-  - Note that for PR Preview purposes, the domain you specify will be prefixed with 'pr-x-', where 'x' is the GitHub event number
+The domain that the site is available at. Required if service chosen is Surge(also if the purpose is PR preview).
+- A surge.sh subdomain
+  - `'<subDomain>.surge.sh'`
+  - Surge allows you to specify a subdomain for free as long as it has not been taken up by others. You have to ensure that the subDomain is unique. 
+  - A possible subdomain to use is your repository name: `markbind-action.surge.sh`
+- A custom domain that you have configured with Surge
+  - Read the [Surge documentation](https://surge.sh/help/adding-a-custom-domain) to understand how to set it up.
+- Additional notes
+  - for PR preview purposes, the domain you specify will automatically be prefixed with 'pr-x-', where 'x' is the GitHub event number
+    - E.g. `'pr-x-<domain>'`
+  - Custom domain does not work with PR preview
 
 ### version
 The MarkBind version to use to build the site.
-- 'latest'
+- Latest
+  - `'latest'`
   - This is the latest published version of MarkBind
-- 'master'
+- Development
+  - `'development'`
   - This is the latest, possibly unpublished version of MarkBind in development
-- 'X.Y.Z'
+- Any valid version
+  - `'X.Y.Z'`
   - This is the version of MarkBind with the specified version number
   - A sample version number is '3.1.1'
+- Any valid version range
+  - Internally the action calls [`npm install`](https://docs.npmjs.com/cli/v6/commands/npm-install) to install the specified version of MarkBind
+  - Hence, a version range such as `'>=3.0.0'` (or semantic versioning like `'^3.1.1'`) is also valid
 
 ### keepFiles
 Whether to keep the files in the published branch before pushing. This is a boolean parameter.
-- false
+- Keep
+  - `false`
   - This is the default value
-- true
+- Don't keep
+  - `true`
   - This will preserve any existing files in the published branch before an update is made.
 
 ### rootDirectory (MarkBind CLI arguments)
 The directory to read source files from.
-- '.'
+- Root
+  - `'.'`
   - This is the default value
   - This is for the case that your source files of the MarkBind site are in the root directory of the repository
-- './path/to/directory'
+- Any subdirectory
+  - `'./path/to/directory'`
   - This is for the case that your source files of the MarkBind site are in a subdirectory of the repository
-  - A sample path is './docs'
+    - A sample path is `'./docs'`
 
 ### baseUrl (MarkBind CLI arguments)
 The base URL relative to your domain.
-- '/reponame'
-  - Defaults to the value of `baseUrl` in your `site.json` file
-  - This is important for deploying your site to GitHub Pages
-  - Note that you will need to specify this or in the site config file (typically the `site.json`), in order to configure the relative URL correctly.
+- Default
+  - The value of `baseUrl` in the site config file (typically `site.json`)
+- Any valid base URL
+  - For GitHub Pages, you will need to specify this here or in the site config file, in order to configure the relative URL correctly.
+    - e.g. `'/reponame'`
+  - For Surge, you will need to ensure that it's `''` here or in the site config file.
 
 ### siteConfig (MarkBind CLI arguments)
 The site config file to use.
-- 'site.json'
+- Default site config file
+  - `'site.json'`
   - This is the default value
 
 # Usage
@@ -98,7 +117,7 @@ In essence, there are two parts to a GitHub Action workflow:
 - The trigger event
 - The jobs/steps to be run after the trigger event occurs
 
-For our context, there two typical trigger events. This is written at the start of the workflow files:
+For our context, there two typical trigger events. This is written at the start of a workflow file:
 (Assuming 'master' is the target branch)
 1. Trigger the action whenever there is a push to the repository
 ```yaml
@@ -131,18 +150,18 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Build & Deploy to GitHub Pages
+      - name: Build & Deploy MarkBind site
         uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           baseUrl: '/mb-test'
           version: '3.1.1'
 ```
-The above script builds the site from the repository's root directory, with baseUrl of '/mb-test' ('mb-test' is the repository name), with MarkBind version 3.1.1.
+The above script builds the site from the repository's root directory, with `baseUrl` of '/mb-test' ('mb-test' is the repository name), with MarkBind version 3.1.1.
 
-Then, it will deploy the site to GitHub Pages. It runs everytime there is a push to the repository.
+Then, it will deploy the site to GitHub Pages. It runs everytime there is a push to the repository's master branch.
 
-# Scenarios
+# Recipes
 ## Deploy to Github Pages on push to main
 ```yaml
 name: MarkBind Action
@@ -156,7 +175,7 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Build & Deploy to GitHub Pages
+      - name: Build & Deploy MarkBind site
         uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -167,13 +186,16 @@ jobs:
 ```yaml
 name: MarkBind Action
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs: 
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Build & Deploy to GitHub Pages
+      - name: Build & Deploy MarkBind site
         uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.SURGE_TOKEN }}
@@ -186,13 +208,16 @@ Note that if you are using custom domain, you will need to ensure that it is con
 ```yaml
 name: MarkBind Action
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs: 
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Build & Deploy to GitHub Pages
+      - name: Build & Deploy MarkBind site
         uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -204,13 +229,16 @@ jobs:
 ```yaml
 name: MarkBind Action
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs: 
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Build & Deploy to GitHub Pages
+      - name: Build & Deploy MarkBind site
         uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -224,13 +252,13 @@ name: MarkBind Action
 on:
   pull_request:
     branches:
-      - master
+      - main
 
 jobs: 
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Build & Deploy to GitHub Pages
+      - name: Build & Deploy MarkBind site
         uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.SURGE_TOKEN }}

@@ -133,7 +133,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy to GitHub Pages
-        uses: tlylt/markbind-deploy@main
+        uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           baseUrl: '/mb-test'
@@ -158,7 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy to GitHub Pages
-        uses: tlylt/markbind-deploy@main
+        uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: '3.1.1'
@@ -175,7 +175,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy to GitHub Pages
-        uses: tlylt/markbind-deploy@main
+        uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.SURGE_TOKEN }}
           service: 'surge'
@@ -194,7 +194,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy to GitHub Pages
-        uses: tlylt/markbind-deploy@main
+        uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: 'master'
@@ -212,7 +212,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy to GitHub Pages
-        uses: tlylt/markbind-deploy@main
+        uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           rootDirectory: './docs'
@@ -232,7 +232,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy to GitHub Pages
-        uses: tlylt/markbind-deploy@main
+        uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.SURGE_TOKEN }}
           service: 'surge'

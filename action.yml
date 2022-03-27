@@ -1,8 +1,131 @@
 name: markbind-action
-description: 'A GitHub Action that builds and deploys your MarkBind site.'
+description: 'Deploy your MarkBind site'
 branding: 
   icon: 'upload-cloud'
   color: 'blue'
+
+inputs:
+  token:
+    description: the required token
+    required: true
+  service:
+    description: the publishing service
+    default: 'gh-pages'
+    type: string
+  purpose:
+    description: the deployment purpose, could be standard deployment or for PR preview
+    default: 'deployment'
+    type: string
+  domain:
+    description: the domain to use
+    type: string
+  version:
+    description: the MarkBind version to use. e.g. 3.1.1
+    default: 'latest'
+    type: string
+  rootDirectory:
+    description: the directory to read source files from
+    default: '.'
+    type: string
+  baseUrl:
+    description: the base URL relative to your domain
+    default: 'unsetFlag' # a flag indicating that baseUrl defaults to the one specified in site.json config file
+    type: string
+  siteConfig:
+    description: the site config file to use
+    default: 'site.json'
+    type: string
+  keepFiles:
+    description: whether the existing files will be removed in the published branch, before pushing.
+    default: false
+    type: boolean
+
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: "composite"
+  steps:
+    - name: Checkout source repo
+      uses: actions/checkout@v3
+      with:
+        path: curr-repo
+    - name: Install Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 12
+    - name: Checkout markbind-cli@master
+      if: inputs.version == 'master'
+      uses: actions/checkout@v3
+      with:
+        repository: MarkBind/markbind
+        path: markbind-cli
+    - name: Install markbind-cli@master
+      if: inputs.version == 'master'
+      run: |
+        npm i -g npm@8.3.1
+        cd markbind-cli
+        npm run setup && npm run build:web
+        cd packages/cli
+        npm link
+        cd ../../..
+      shell: bash
+    - name: Install a released version of markbind-cli
+      if: inputs.version != 'master'
+      run: |
+        npm install -g markbind-cli@${{ inputs.version }}
+      shell: bash
+    - name: Build site
+      run: |
+        BASEURL="--baseUrl ${{ inputs.baseurl }}" 
+        if [[ ${{ inputs.baseurl }} == "unsetFlag" ]]; then
+          BASEURL=""
+          echo "Default baseUrl to the config file attribute"
+        fi
+        cd curr-repo
+        markbind build ${{ inputs.rootDirectory }} ./_site \
+        $BASEURL --site-config ${{ inputs.siteConfig }}
+        cd ..
+        echo "Site Built!"
+      shell: bash
+    - name: Deploy via gh-pages
+      if: inputs.service == 'gh-pages'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ inputs.token }}
+        publish_dir: ./curr-repo/_site
+        user_name: github-actions[bot]
+        user_email: 41898282+github-actions[bot]@users.noreply.github.com
+        keep_files: ${{ inputs.keepFiles }}
+    - name: Deploy via Surge.sh for normal deployment
+      if: inputs.service == 'surge' && inputs.purpose == 'deployment'
+      run: |
+        npm i -g surge
+        surge --project ./curr-repo/_site --domain ${{ inputs.domain }}
+      shell: bash
+      env:
+        SURGE_TOKEN: ${{ inputs.token }}
+    - name: Deploy via Surge.sh for PR Preview
+      if: inputs.service == 'surge' && inputs.purpose == 'pr-preview' && github.event_name == 'pull_request'
+      run: |
+        echo "prNum=${{ github.event.number }}" >> $GITHUB_ENV
+        npm i -g surge
+        PR_PREVIEW_URL="https://pr-${{ github.event.number }}-${{ inputs.domain }}"
+        echo "previewUrl=$PR_PREVIEW_URL" >> $GITHUB_ENV
+        surge --project ./curr-repo/_site --domain $PR_PREVIEW_URL
+      shell: bash
+      env:
+        SURGE_TOKEN: ${{ inputs.token }}
+    - name: Find existing PR preview link comment
+      if: inputs.service == 'surge' && inputs.purpose == 'pr-preview' && github.event_name == 'pull_request'
+      uses: peter-evans/find-comment@v1
+      id: fc
+      with:
+        issue-number: ${{ env.prNum }}
+        body-includes: Your PR can be previewed
+    - name: Comment PR preview link in PR
+      if: inputs.service == 'surge' && inputs.purpose == 'pr-preview' && github.event_name == 'pull_request' && steps.fc.outputs.comment-id == 0
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        issue-number: ${{ env.prNum }}
+        body: |
+          Thank you for submitting the Pull Request! :thumbsup: 
+
+          Your PR can be previewed [here](${{ env.previewUrl }})

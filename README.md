@@ -52,16 +52,15 @@ The domain that the site is available at. Required if service chosen is surge. S
 
 - 'xxx.surge.sh'
   - A typical domain that you can specify. You have to ensure that 'xxx' is unique. Read [here](https://surge.sh/help/adding-a-custom-domain) on how to configure a custom domain with Surge.sh
-- 'pr-x-domain'
-  - Note that for PR Preview purposes, the domain will be prefixed with 'pr-x', which 'x' is the GitHub event number
-  - You will need to specify what 'domain' is
+- 'pr-x-<domain>'
+  - Note that for PR Preview purposes, the domain you specify will be prefixed with 'pr-x-', where 'x' is the GitHub event number
 
 ### version
 The MarkBind version to use to build the site.
 - 'latest'
   - This is the latest published version of MarkBind
 - 'master'
-  - This is the latest, possibly unpublished version of MarkBind
+  - This is the latest, possibly unpublished version of MarkBind in development
 - 'X.Y.Z'
   - This is the version of MarkBind with the specified version number
   - A sample version number is '3.1.1'
@@ -71,7 +70,7 @@ Whether to keep the files in the published branch before pushing. This is a bool
 - false
   - This is the default value
 - true
-  - This will make the published branch keep the existing files before an update is made.
+  - This will preserve any existing files in the published branch before an update is made.
 
 ### rootDirectory (MarkBind CLI arguments)
 The directory to read source files from.
@@ -240,8 +239,8 @@ jobs:
           domain: 'mb-test.surge.sh'
 ```
 
-## Underlying Actions
-Besides some processing bash scripts, this action is composed of the following actions:
+## Behind the Scenes
+Besides processing a few bash scripts, this action utilises the following actions:
 - [actions/checkout](https://github.com/actions/checkout)
 - [actions/setup-node](https://github.com/actions/setup-node)
 - [peter-evans/find-comment](https://github.com/peter-evans/find-comment)

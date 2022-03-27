@@ -60,6 +60,7 @@ The domain that the site is available at. Required if service chosen is Surge(al
   - for PR preview purposes, the domain you specify will automatically be prefixed with 'pr-x-', where 'x' is the GitHub event number
     - E.g. `'pr-x-<domain>'`
   - Custom domain does not work with PR preview
+  - This action will not automatically cleanup merged PR deployments. Follow this [instruction](https://surge.sh/help/tearing-down-a-project) to manually tear down the deployed site
 
 ### version
 The MarkBind version to use to build the site.
@@ -202,9 +203,8 @@ jobs:
           service: 'surge'
           domain: 'mb-test.surge.sh'
 ```
-Note that if you are using custom domain, you will need to ensure that it is configured with Surge.sh.
 
-## Build with the development branch of MarkBind
+## Build with the latest developmental version of MarkBind
 ```yaml
 name: MarkBind Action
 
@@ -221,9 +221,8 @@ jobs:
         uses: MarkBind/markbind-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          version: 'master'
+          version: 'development'
 ```
-'master' is specified so that the site is built with the latest (possibly unpublished) version of MarkBind.
 
 ## Build with files that is not at the root level of the repository
 ```yaml

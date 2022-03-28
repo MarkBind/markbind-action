@@ -3,17 +3,17 @@ A GitHub Action that builds and deploys your MarkBind site.
 
 ## Option Summary
 
-Option        | Required |                      Default | Remarks
-:-------------|:--------:|-----------------------------:|-----------------------------------------------------------------------------------------------------------
-token         |   yes    |                              | The token to be used for the service
-service       |    no    |                 `'gh-pages'` | The publishing service to deploy the site
-purpose       |    no    |               `'deployment'` | The deployment purpose
-domain        |    no    |                         `''` | The domain that the site is available at. Required if service chosen is surge or the purpose is PR preview
-version       |    no    |                   `'latest'` | The MarkBind version to use to build the site
-keepFiles     |    no    |                      `false` | Whether to keep the files in the published branch before pushing
-rootDirectory |    no    |                        `'.'` | The directory to read source files from
-baseUrl       |    no    | Value specified in site.json | The base URL relative to your domain
-siteConfig    |    no    |                `'site.json'` | The site config file to use
+Option                          | Required |                      Default | Remarks
+:-------------------------------|:--------:|-----------------------------:|-----------------------------------------------------------------
+[token](#token)                 |   yes    |                              | The token to be used for the service
+[service](#service)             |    no    |                 `'gh-pages'` | The publishing service to deploy the site
+[purpose](#purpose)             |    no    |               `'deployment'` | The deployment purpose
+[domain](#domain)               |    no    |                         `''` | The domain that the site is available at
+[version](#version)             |    no    |                   `'latest'` | The MarkBind version to use to build the site
+[keepFiles](#keepFiles)         |    no    |                      `false` | Whether to keep the files in the published branch before pushing
+[rootDirectory](#rootDirectory) |    no    |                        `'.'` | The directory to read source files from
+[baseUrl](#baseUrl)             |    no    | Value specified in site.json | The base URL relative to your domain
+[siteConfig](#siteConfig)       |    no    |                `'site.json'` | The site config file to use
 
 ## Option Details
 
@@ -24,7 +24,7 @@ Currently two types of tokens are supported (correspond to the two supported pub
   - Note that you need to ensure that your have selected the branch that you want to deploy to in your [GitHub repo's Pages settings](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#choosing-a-publishing-source)
   - Deployment to GitHub Pages might take 5-10 minutes before the site is available/refreshed
 - Token for Surge.sh
-  - Example: `${{ secrets.SURGE_TOKEN }}`
+  - `${{ secrets.SURGE_TOKEN }}`
     - `SURGE_TOKEN` is the environment secret name
   - Require registration with an email address
   - After retrieving the token, put the token as a repository secret in your
@@ -46,21 +46,24 @@ The purpose of the deployment. This can be either standard deployment or for PR 
   - This is the default value
 - PR preview
   - `'pr-preview'`
-  - This is used if you want to build and preview the updated site whenever there is a PR made to the repository. Note that this does not work for PR from a fork (due to security reasons)
+  - This is used if you want to build and preview the updated site whenever there is a PR made to the repository
+  - The `service` must be `'surge'` and the `domain` must be specified
+  - Note that this does not work for PR from a fork (due to security reasons)
+  - This action will not automatically cleanup merged PR deployments. Follow this [instruction](https://surge.sh/help/tearing-down-a-project) to manually tear down the deployed site if required
 
 ### domain
-The domain that the site is available at. Required if service chosen is Surge(also if the purpose is PR preview).
+The domain that the site is available at. Required if `service` chosen is Surge.
 - A surge.sh subdomain
   - `'<subDomain>.surge.sh'`
-  - Surge allows you to specify a subdomain for free as long as it has not been taken up by others. You have to ensure that the subDomain is unique. 
-  - A possible subdomain to use is your repository name: `markbind-action.surge.sh`
+  - Surge allows you to specify a subdomain for free as long as it has not been taken up by others. You have to ensure that the `<subDomain>` is unique. 
+  - A possible subdomain to use is your repository name: e.g. `markbind-action.surge.sh`
 - A custom domain that you have configured with Surge
-  - Read the [Surge documentation](https://surge.sh/help/adding-a-custom-domain) to understand how to set it up.
+  - Read the [Surge documentation](https://surge.sh/help/adding-a-custom-domain) to understand how to set it up
 - Additional notes
   - for PR preview purposes, the domain you specify will automatically be prefixed with 'pr-x-', where 'x' is the GitHub event number
-    - E.g. `'pr-x-<domain>'`
+    - E.g. `'pr-x-<domain>'` (and hence `'pr-1-markbind-action.surge.sh'`)
   - Custom domain does not work with PR preview
-  - This action will not automatically cleanup merged PR deployments. Follow this [instruction](https://surge.sh/help/tearing-down-a-project) to manually tear down the deployed site
+  - This action will not automatically cleanup merged PR deployments. Follow this [instruction](https://surge.sh/help/tearing-down-a-project) to manually tear down the deployed site if required
 
 ### version
 The MarkBind version to use to build the site.
@@ -73,7 +76,7 @@ The MarkBind version to use to build the site.
 - Any valid version
   - `'X.Y.Z'`
   - This is the version of MarkBind with the specified version number
-  - A sample version number is '3.1.1'
+  - E.g. `'3.1.1'`
 - Any valid version range
   - Internally the action calls [`npm install`](https://docs.npmjs.com/cli/v6/commands/npm-install) to install the specified version of MarkBind
   - Hence, a version range such as `'>=3.0.0'` (or semantic versioning like `'^3.1.1'`) is also valid
@@ -96,7 +99,7 @@ The directory to read source files from.
 - Any subdirectory
   - `'./path/to/directory'`
   - This is for the case that your source files of the MarkBind site are in a subdirectory of the repository
-    - A sample path is `'./docs'`
+    - E.g. `'./docs'`
 
 ### baseUrl (MarkBind CLI arguments)
 The base URL relative to your domain.
@@ -105,13 +108,16 @@ The base URL relative to your domain.
 - Any valid base URL
   - For GitHub Pages, you will need to specify this here or in the site config file, in order to configure the relative URL correctly.
     - e.g. `'/reponame'`
-  - For Surge, you will need to ensure that it's `''` here or in the site config file.
+  - For Surge, you will need to ensure that it's specfied as `''` here or in the site config file.
 
 ### siteConfig (MarkBind CLI arguments)
 The site config file to use.
 - Default site config file
   - `'site.json'`
   - This is the default value
+- Name of your site config file
+  - If your site config file is not named `site.json`, specify the name here
+    - E.g. `'ug-site.json'`
 
 # Usage
 In essence, there are two parts to a GitHub Action workflow:

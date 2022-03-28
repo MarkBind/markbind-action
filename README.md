@@ -11,9 +11,9 @@ Option                          | Required |                      Default | Rema
 [domain](#domain)               |    no    |                         `''` | The domain that the site is available at
 [version](#version)             |    no    |                   `'latest'` | The MarkBind version to use to build the site
 [keepFiles](#keepFiles)         |    no    |                      `false` | Whether to keep the files in the published branch before pushing
-[rootDirectory](#rootDirectory) |    no    |                        `'.'` | The directory to read source files from
-[baseUrl](#baseUrl)             |    no    | Value specified in site.json | The base URL relative to your domain
-[siteConfig](#siteConfig)       |    no    |                `'site.json'` | The site config file to use
+[rootDirectory](#rootdirectory-markbind-cli-arguments) |    no    |                        `'.'` | The directory to read source files from
+[baseUrl](#baseurl-markbind-cli-arguments)             |    no    | Value specified in site.json | The base URL relative to your domain
+[siteConfig](#siteconfig-markbind-cli-arguments)       |    no    |                `'site.json'` | The site config file to use
 
 ## Option Details
 

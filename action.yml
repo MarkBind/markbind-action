@@ -74,8 +74,8 @@ runs:
       shell: bash
     - name: Build site
       run: |
-        BASEURL="--baseUrl ${{ inputs.baseurl }}" 
-        if [[ ${{ inputs.baseurl }} == "unsetFlag" ]]; then
+        BASEURL="--baseUrl ${{ inputs.baseUrl }}" 
+        if [[ ${{ inputs.baseUrl }} == "unsetFlag" ]]; then
           BASEURL=""
           echo "Default baseUrl to the config file attribute"
         fi

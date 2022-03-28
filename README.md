@@ -21,13 +21,13 @@ Option                  | Required |        Default | Remarks
 Currently two types of tokens are supported (correspond to the two supported publishing services):
 - Token for GitHub Pages
   - Simply use `${{ secrets.GITHUB_TOKEN }}`
-  - Note that you need to ensure that your have selected the branch that you want to deploy to in your [GitHub repo's Pages settings](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#choosing-a-publishing-source)
+  - Note that you need to ensure that you have selected the branch that you want to deploy to in your [GitHub repo's Pages settings](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site#choosing-a-publishing-source)
   - Deployment to GitHub Pages might take 5-10 minutes before the site is available/refreshed
 - Token for Surge.sh
   - `${{ secrets.SURGE_TOKEN }}`
     - `SURGE_TOKEN` is the environment secret name
   - Require registration with an email address
-  - After retrieving the token, put the token as a repository secret in your
+  - After retrieving the token, put the token as a repository secret in your repository
   - See [here](https://markbind.org/userGuide/deployingTheSite.html#previewing-prs-using-surge) for a detailed guide on how to retrieve the token
 
 ### service
@@ -40,7 +40,7 @@ Currently two types of publishing services are supported:
   - See [here](https://surge.sh/) for more details
 
 ### purpose
-The purpose of the deployment. This can be either standard deployment or for PR previewing.
+The purpose of the deployment. This can either be standard deployment or for PR preview.
 - Standard deployment
   - `'deployment'`
   - This is the default value
@@ -124,7 +124,7 @@ In essence, there are two parts to a GitHub Action workflow:
 - The trigger event
 - The jobs/steps to be run after the trigger event occurs
 
-For our context, there two typical trigger events. This is written at the start of a workflow file:
+For our context, there are two typical trigger events. This is written at the start of a workflow file:
 (Assuming 'master' is the target branch)
 1. Trigger the action whenever there is a push to the repository
 ```yaml

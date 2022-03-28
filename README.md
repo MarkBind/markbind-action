@@ -56,12 +56,12 @@ The domain that the site is available at. Required if `service` chosen is Surge.
 - A surge.sh subdomain
   - `'<subDomain>.surge.sh'`
   - Surge allows you to specify a subdomain for free as long as it has not been taken up by others. You have to ensure that the `<subDomain>` is unique. 
-  - A possible subdomain to use is your repository name: e.g. `markbind-action.surge.sh`
+  - A possible subdomain to use is your repository name: e.g. `mb-test.surge.sh`
 - A custom domain that you have configured with Surge
   - Read the [Surge documentation](https://surge.sh/help/adding-a-custom-domain) to understand how to set it up
 - Additional notes
   - for PR preview purposes, the domain you specify will automatically be prefixed with 'pr-x-', where 'x' is the GitHub event number
-    - E.g. `'pr-x-<domain>'` (and hence `'pr-1-markbind-action.surge.sh'`)
+    - E.g. `'pr-x-<domain>'` (and hence `'pr-1-mb-test.surge.sh'`)
   - Custom domain does not work with PR preview
   - This action will not automatically cleanup merged PR deployments. Follow this [instruction](https://surge.sh/help/tearing-down-a-project) to manually tear down the deployed site if required
 
@@ -250,7 +250,7 @@ jobs:
           rootDirectory: './docs'
 ```
 
-## PR Preview for PRs made following a branching workflow
+## PR preview for PRs made within the same repository
 ```yaml
 name: MarkBind Action
 

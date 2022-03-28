@@ -158,7 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy MarkBind site
-        uses: MarkBind/markbind-action@master
+        uses: MarkBind/markbind-action@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           baseUrl: '/mb-test'
@@ -183,7 +183,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy MarkBind site
-        uses: MarkBind/markbind-action@master
+        uses: MarkBind/markbind-action@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: '3.1.1'
@@ -203,7 +203,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy MarkBind site
-        uses: MarkBind/markbind-action@master
+        uses: MarkBind/markbind-action@v2
         with:
           token: ${{ secrets.SURGE_TOKEN }}
           service: 'surge'
@@ -224,7 +224,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy MarkBind site
-        uses: MarkBind/markbind-action@master
+        uses: MarkBind/markbind-action@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: 'development'
@@ -244,7 +244,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy MarkBind site
-        uses: MarkBind/markbind-action@master
+        uses: MarkBind/markbind-action@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           rootDirectory: './docs'
@@ -264,7 +264,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build & Deploy MarkBind site
-        uses: MarkBind/markbind-action@master
+        uses: MarkBind/markbind-action@v2
         with:
           token: ${{ secrets.SURGE_TOKEN }}
           service: 'surge'

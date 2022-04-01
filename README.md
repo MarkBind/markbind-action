@@ -83,10 +83,10 @@ The MarkBind version to use to build the site.
 
 ### keepFiles
 Whether to keep the files in the published branch before pushing. This is a boolean parameter.
-- Keep
+- Don't keep
   - `false`
   - This is the default value
-- Don't keep
+- Keep
   - `true`
   - This will preserve any existing files in the published branch before an update is made.
 

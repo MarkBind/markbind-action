@@ -83,10 +83,10 @@ The MarkBind version to use to build the site.
 
 ### keepFiles
 Whether to keep the files in the published branch before pushing. This is a boolean parameter.
-- Keep
+- Don't keep
   - `false`
   - This is the default value
-- Don't keep
+- Keep
   - `true`
   - This will preserve any existing files in the published branch before an update is made.
 
@@ -107,7 +107,7 @@ The base URL relative to your domain.
   - The value of `baseUrl` in the site config file (typically `site.json`)
 - Any valid base URL
   - For GitHub Pages, you will need to specify this here or in the site config file, in order to configure the relative URL correctly.
-    - e.g. `'/reponame'`
+    - e.g. `'/repoName'`
   - For Surge, you will need to ensure that it's specfied as `''` here or in the site config file.
 
 ### siteConfig (MarkBind CLI arguments)
@@ -188,6 +188,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: '3.1.1'
 ```
+
+For GitHub Pages, you will need to specify the `baseUrl` either as an input in the workflow file or in the site config file(`site.json`), in order to configure the relative URL correctly.
+- `baseUrl` is typically '/repoName'
 
 ## Deploy to Surge.sh
 ```yaml

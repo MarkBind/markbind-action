@@ -30,6 +30,13 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 12
+      - name: Install Graphviz
+        run: sudo apt-get install graphviz
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
       - name: Checkout markbind-cli@master
         if: inputs.version == 'development'
         uses: actions/checkout@v3

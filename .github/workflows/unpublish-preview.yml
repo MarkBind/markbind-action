@@ -1,0 +1,47 @@
+name: Unpublish preview site
+
+on:
+  workflow_call:
+    secrets:
+      token: # SURGE_TOKEN
+        description: the token for deployment service
+        required: true
+    inputs:
+      domain:
+        description: the domain to use
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Unpublish from Surge
+    steps:
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - name: Build PR preview url
+        id: pr-url
+        run: |
+          PR_URL="https://pr-${{ github.event.number }}-${{ inputs.domain }}"
+          echo '::set-output name=ACTIONS_PREVIEW_URL::'$PR_URL
+      - name: Install surge and teardown
+        run: |
+          npm i -g surge
+          surge teardown --domain ${{ steps.pr-url.outputs.ACTIONS_PREVIEW_URL }}
+        env:
+          SURGE_TOKEN: ${{ secrets.token }}
+      - name: Find existing PR preview link comment
+        uses: peter-evans/find-comment@v1
+        id: fc
+        with:
+          issue-number: ${{ github.event.number }}
+          body-includes: Your PR preview site has been torn down
+      - name: Comment PR preview torn down in PR
+        if: ${{ steps.fc.outputs.comment-id == 0 }}
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            Your PR preview site has been torn down

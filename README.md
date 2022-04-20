@@ -1,6 +1,8 @@
 # markbind-action
 A GitHub Action that builds and deploys your MarkBind site.
 
+- See [markbind-reusable-workflows](.github/workflows/README.md) for more details on a list of utilities that can be used to improve your CI/CD with a MarkBind site.
+
 ## Option Summary
 
 Option                  | Required |        Default | Remarks

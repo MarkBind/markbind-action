@@ -1,0 +1,87 @@
+name: Build site from Fork
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: the version of MarkBind to use. e.g. 3.1.1
+        default: 'latest'
+        type: string
+      rootDirectory:
+        description: read source files from the specified directory
+        default: '.'
+        type: string
+      siteConfig:
+        description: the site config file to use
+        default: 'site.json'
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: curr-repo
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - name: Install Graphviz
+        run: sudo apt-get install graphviz
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+      - name: Checkout markbind-cli@master
+        if: inputs.version == 'development'
+        uses: actions/checkout@v3
+        with:
+          repository: MarkBind/markbind
+          path: markbind-cli
+      - name: Install markbind-cli@master
+        if: inputs.version == 'development'
+        run: |
+          npm i -g npm@8.3.1
+          cd markbind-cli
+          npm run setup && npm run build:web
+          cd packages/cli
+          npm link
+          cd ../../..
+      - name: Install a released version of markbind-cli
+        if: inputs.version != 'development'
+        run: |
+          npm install -g markbind-cli@${{ inputs.version }}
+      - name: Build site
+        run: |
+          cd curr-repo
+          markbind build ${{ inputs.rootDirectory }} ./_site \
+          --baseUrl --site-config ${{ inputs.siteConfig }}
+          cd ..
+          echo "Site Built!"
+      - name: Check build status
+        run: |
+          if [ ! -d "./curr-repo/_site" ]; then
+            echo "Build Error"
+            exit 1
+          fi
+      - name: Save PR number and HEAD commit
+        if: ${{ success() && github.event_name == 'pull_request' }}
+        run: |
+          mkdir -p ./pr
+          echo ${{ github.event.number }} > ./pr/NUMBER
+          echo ${{ github.event.pull_request.head.sha }} > ./pr/SHA
+      - name: Upload artifacts
+        if: ${{ success() && github.event_name == 'pull_request' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: site-artifacts
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            ./curr-repo/_site
+            ./pr

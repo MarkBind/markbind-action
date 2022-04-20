@@ -1,0 +1,60 @@
+name: Preview site from Fork
+
+on:
+  workflow_call:
+    secrets:
+      token: # SURGE_TOKEN
+        description: the token for deployment service
+        required: true
+    inputs:
+      domain:
+        description: the domain to use
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Deploying to surge
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download built site artifacts
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: fork-build.yml
+          run_id: ${{ github.event.workflow_run.id }}
+          name: site-artifacts
+          path: .
+      - name: Extract PR number
+        id: pr-number
+        run: echo '::set-output name=ACTIONS_PR_NUMBER::'$(cat ./pr/NUMBER)
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - name: Build PR preview url
+        id: pr-url
+        run: |
+          PR_URL="https://pr-${{ steps.pr-number.outputs.ACTIONS_PR_NUMBER }}-${{ inputs.domain }}"
+          echo '::set-output name=ACTIONS_PREVIEW_URL::'$PR_URL
+      - name: Install surge and deploy PR to surge
+        run: |
+          npm i -g surge
+          surge --project ./curr-repo/_site --domain ${{ steps.pr-url.outputs.ACTIONS_PREVIEW_URL }}
+        env:
+          SURGE_TOKEN: ${{ secrets.token }}
+      - name: Find existing PR preview link comment
+        uses: peter-evans/find-comment@v1
+        id: fc
+        with:
+          issue-number: ${{ steps.pr-number.outputs.ACTIONS_PR_NUMBER }}
+          body-includes: Your PR can be previewed
+      - name: Comment PR preview link in PR
+        if: ${{ steps.fc.outputs.comment-id == 0 }}
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ steps.pr-number.outputs.ACTIONS_PR_NUMBER }}
+          body: |
+            Thank you for submitting the Pull Request! :thumbsup: 
+
+            Your PR can be previewed [here](${{ steps.pr-url.outputs.ACTIONS_PREVIEW_URL }})

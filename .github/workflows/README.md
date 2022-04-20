@@ -2,7 +2,7 @@
 
 A list of GitHub Reusable Workflows that help improve your CI/CD with a MarkBind site.
 
-- Create a new workflow to preview proposed changes to your MarkBind site, including PRs from forks
+- Create a new workflow to set up PR preview for your MarkBind site, including PRs from forks
   - `fork-build.yml`
   - `fork-preview.yml`
 - Unpublish PR preview site
@@ -33,6 +33,7 @@ The MarkBind version to use to build the site.
 
 - Latest
   - `'latest'`
+  - This is the default value
   - This is the latest published version of MarkBind
 - Development
   - `'development'`
@@ -157,11 +158,11 @@ jobs:
 
 *(This is Optional)*
 
-By default, the site will be published to surge.sh and will be available for preview. These site will not be deleted when the PR is merged. However, if you wish to unpublish the site whenever the PR is merged/closed, you can use the following workflow.
+By default, the site will be published to surge.sh and will be available for preview. The site will not be deleted when the PR is merged. However, if you wish to unpublish the site whenever the PR is merged/closed, you can use the following workflow.
 
 Note that this workflow uses the `pull_request_target` in order to expose the secrets to the workflow triggered by a fork. This is still secure (admittedly, not as secure as not exposing the secrets at all) as the workflow does not require dangerous processing, say building or running the content of the PR. Read [Keeping your GitHub Actions and workflows secure Part 1: Preventing pwn requests](https://securitylab.github.com/research/github-actions-preventing-pwn-requests/) if you want to learn more about this.
 
-You may also consider manually teardown a surge site by following the [instruction](https://surge.sh/help/tearing-down-a-project), if required.
+You may also consider a manual teardown of a surge site by following the [instruction](https://surge.sh/help/tearing-down-a-project), if required.
 
 1. Create a `unpublish-preview.yml`
    - Adjust the target branch accordingly

@@ -71,7 +71,7 @@ The domain that the site is available at. Required if `service` chosen is Surge.
 The MarkBind version to use to build the site.
 - Latest
   - `'latest'`
-  - This is the latest published version of MarkBind
+  - This is the [latest published](https://www.npmjs.com/package/markbind-cli) version of MarkBind
 - Development
   - `'development'`
   - This is the latest, possibly unpublished version of MarkBind in development
@@ -164,9 +164,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           baseUrl: '/mb-test'
-          version: '3.1.1'
+          version: '4.0.0'
 ```
-The above script builds the site from the repository's root directory, with `baseUrl` of '/mb-test' ('mb-test' is the repository name), with MarkBind version 3.1.1.
+The above script builds the site from the repository's root directory, with `baseUrl` of '/mb-test' ('mb-test' is the repository name), with MarkBind version `4.0.0`.
 
 Then, it will deploy the site to GitHub Pages. It runs everytime there is a push to the repository's master branch.
 
@@ -188,7 +188,7 @@ jobs:
         uses: MarkBind/markbind-action@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          version: '3.1.1'
+          version: '4.0.0'
 ```
 
 For GitHub Pages, you will need to specify the `baseUrl` either as an input in the workflow file or in the site config file(`site.json`), in order to configure the relative URL correctly.

@@ -29,7 +29,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 16
       - name: Install Graphviz
         run: sudo apt-get install graphviz
       - name: Install Java
@@ -46,7 +46,6 @@ jobs:
       - name: Install markbind-cli@master
         if: inputs.version == 'development'
         run: |
-          npm i -g npm@8.3.1
           cd markbind-cli
           npm run setup && npm run build:web
           cd packages/cli

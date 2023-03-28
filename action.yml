@@ -60,7 +60,6 @@ runs:
     - name: Install markbind-cli@master
       if: inputs.version == 'development'
       run: |
-        npm i -g npm@8.19.3
         cd markbind-cli
         npm run setup && npm run build:web
         cd packages/cli

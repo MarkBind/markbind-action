@@ -44,7 +44,7 @@ jobs:
         env:
           SURGE_TOKEN: ${{ secrets.token }}
       - name: Find existing PR preview link comment
-        uses: peter-evans/find-comment@v1
+        uses: peter-evans/find-comment@v2
         id: fc
         with:
           issue-number: ${{ steps.pr-number.outputs.ACTIONS_PR_NUMBER }}

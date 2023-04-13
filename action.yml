@@ -121,7 +121,7 @@ runs:
         body-includes: Your PR can be previewed
     - name: Comment PR preview link in PR
       if: inputs.service == 'surge' && inputs.purpose == 'pr-preview' && github.event_name == 'pull_request' && steps.fc.outputs.comment-id == 0
-      uses: peter-evans/create-or-update-comment@v1
+      uses: peter-evans/create-or-update-comment@v2
       with:
         issue-number: ${{ env.prNum }}
         body: |

@@ -40,7 +40,7 @@ jobs:
           body-includes: Your PR preview site has been torn down
       - name: Comment PR preview torn down in PR
         if: ${{ steps.fc.outputs.comment-id == 0 }}
-        uses: peter-evans/create-or-update-comment@v1
+        uses: peter-evans/create-or-update-comment@v2
         with:
           issue-number: ${{ github.event.number }}
           body: |

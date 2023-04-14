@@ -29,7 +29,7 @@ jobs:
         id: pr-number
         run: echo "ACTIONS_PR_NUMBER=$(cat ./pr/NUMBER)" >> $GITHUB_OUTPUT
       - name: Install Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16
       - name: Build PR preview url

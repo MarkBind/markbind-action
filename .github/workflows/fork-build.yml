@@ -27,7 +27,7 @@ jobs:
         with:
           path: curr-repo
       - name: Install Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16
       - name: Install Graphviz
